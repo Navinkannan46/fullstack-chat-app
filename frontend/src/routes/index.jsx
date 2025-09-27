@@ -7,11 +7,10 @@ import { Loader } from "lucide-react";
 import { Toaster } from "react-hot-toast";
 
 const AppRoutes = () => {
-  const { authUser, checkAuth, isCheckingAuth, onlineUsers } = useAuthStore();
+  const { authUser, checkAuth, isCheckingAuth } = useAuthStore();
   useEffect(() => {
     checkAuth();
   }, [checkAuth]);
-  console.log(onlineUsers);
 
   if (isCheckingAuth && !authUser)
     return (

@@ -4,7 +4,7 @@ import toast from "react-hot-toast";
 import { io } from "socket.io-client";
 
 const BASE_URL =
-  import.meta.env.MODE === "development" ? "http://localhost:3001" : "/";
+  import.meta.env.MODE === "development" ? "http://localhost:5000" : "/";
 
 export const useAuthStore = create((set, get) => ({
   authUser: null,
@@ -19,10 +19,9 @@ export const useAuthStore = create((set, get) => ({
     try {
       const res = await api.get("/auth/check");
       set({ authUser: res.data });
-      console.log(res);
       get().connectSocket();
     } catch (error) {
-      toast.error(error?.response?.data?.message || "No User");
+      console.log(error);
       set({ authUser: null });
     } finally {
       set({ isCheckingAuth: false });
@@ -32,13 +31,9 @@ export const useAuthStore = create((set, get) => ({
   signup: async (data) => {
     set({ isSigningUp: true });
     try {
-      const res = await api.post("/auth/signup", data);
-      set({ authUser: res.data });
+      await api.post("/auth/signup", data);
       toast.success("Account created successfully");
-      get().connectSocket();
     } catch (error) {
-      console.log(error);
-
       toast.error(error?.response?.data?.message || "Signup failed");
     } finally {
       set({ isSigningUp: false });
@@ -54,8 +49,6 @@ export const useAuthStore = create((set, get) => ({
       toast.success("Login successfully");
       get().connectSocket();
     } catch (error) {
-      console.log(error);
-
       toast.error(error?.response?.data?.message);
     } finally {
       set({ isLoggingIn: false });
@@ -69,8 +62,6 @@ export const useAuthStore = create((set, get) => ({
       toast.success("Logout Successfullly");
       get().disconnectSocket();
     } catch (error) {
-      console.log(error);
-
       toast.error(error?.response?.data?.message || "Logout Error");
     }
   },
@@ -98,7 +89,6 @@ export const useAuthStore = create((set, get) => ({
     });
     socket.connect();
     set({ socket: socket });
-
     socket.on("getOnlineUsers", (userIds) => {
       set({ onlineUsers: userIds });
     });
