@@ -10,7 +10,7 @@ import messageRoutes from "./routes/message.route.js";
 import { app, server } from "./lib/socket.js";
 dotenv.config();
 
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 3001;
 const __dirname = path.resolve();
 
 app.use(express.json({ limit: "10mb" }));

@@ -19,8 +19,10 @@ export const useAuthStore = create((set, get) => ({
     try {
       const res = await api.get("/auth/check");
       set({ authUser: res.data });
+      console.log(res);
       get().connectSocket();
     } catch (error) {
+      toast.error(error?.response?.data?.message || "No User");
       set({ authUser: null });
     } finally {
       set({ isCheckingAuth: false });
@@ -30,10 +32,13 @@ export const useAuthStore = create((set, get) => ({
   signup: async (data) => {
     set({ isSigningUp: true });
     try {
-      await api.post("/auth/signup", data);
+      const res = await api.post("/auth/signup", data);
+      set({ authUser: res.data });
       toast.success("Account created successfully");
       get().connectSocket();
     } catch (error) {
+      console.log(error);
+
       toast.error(error?.response?.data?.message || "Signup failed");
     } finally {
       set({ isSigningUp: false });
@@ -44,10 +49,13 @@ export const useAuthStore = create((set, get) => ({
     set({ isLoggingIn: true });
     try {
       const res = await api.post("/auth/login", data);
+      console.log(res);
       set({ authUser: res.data });
       toast.success("Login successfully");
       get().connectSocket();
     } catch (error) {
+      console.log(error);
+
       toast.error(error?.response?.data?.message);
     } finally {
       set({ isLoggingIn: false });
